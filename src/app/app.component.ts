@@ -1,37 +1,51 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { AgGridNg2 } from 'ag-grid-angular';
+import { Component } from '@angular/core';
 
 @Component({
     selector: 'app-root',
     templateUrl: './app.component.html',
     styleUrls: ['./app.component.scss']
 })
-export class AppComponent implements OnInit {
-    @ViewChild('agGrid') agGrid: AgGridNg2;
-
+export class AppComponent {
     title = 'app';
 
     columnDefs = [
-        {headerName: 'Make', field: 'make', checkboxSelection: true },
+        {headerName: 'Make', field: 'make' },
         {headerName: 'Model', field: 'model' },
         {headerName: 'Price', field: 'price'}
     ];
 
-    rowData: any;
+    rowData = [
+        // new LocalData('Toyota', 'Celica', 35000),
+        // new LocalData('Ford', 'Celica', 32000),
+        // new LocalData('Porsche', 'Celica', 35000),
 
-    constructor(private http: HttpClient) {
+        LocalData.load('Toyota', 'Celica', 35000),
+        LocalData.load('Ford', 'Celica', 32000),
+        LocalData.load('Porsche', 'Celica', 35000),
+    ];
+}
 
+class LocalData{
+    make: string;
+    model: string;
+    price: number;
+
+    // constructor(make: string, model: string, price: number) {
+    //     this.make = make;
+    //     this.model = model;
+    //     this.price = price;
+    // }
+
+    static load (make: string, model: string, price: number) {
+        const localData = new LocalData();
+        localData.make = make;
+        localData.model = model;
+        localData.price = price;
+        return localData;
     }
 
-    ngOnInit() {
-        this.rowData = this.http.get('https://api.myjson.com/bins/15psn9');
-    }
+    // load () {
+    //
+    // }
 
-    getSelectedRows() {
-        const selectedNodes = this.agGrid.api.getSelectedNodes();
-        const selectedData = selectedNodes.map( node => node.data );
-        const selectedDataStringPresentation = selectedData.map( node => node.make + ' ' + node.model).join(', ');
-        alert(`Selected nodes: ${selectedDataStringPresentation}`);
-    }
 }
